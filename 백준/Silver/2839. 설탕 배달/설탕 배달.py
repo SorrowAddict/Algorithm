@@ -1,23 +1,13 @@
-N = int(input())
+n = int(input())
+a =  n//5
+s=0
+imsi = n
+for i in range(a+1):
+    imsi = n - 5 * i
+    if imsi%3 == 0:
+        s = int(imsi/3+i)
 
-cnt = 0
-
-while N > 0:    
-    if N == 1 or N == 2:
-        cnt = -1
-        break
-
-    if N%5 == 0:
-        N -= 5
-        cnt += 1
-    elif N%3 == 0:
-        N -= 3
-        cnt += 1
-    elif N > 5:
-        N -= 5
-        cnt += 1
-    elif N > 3:
-        N -= 3
-        cnt += 1
-
-print(cnt)
+if s == 0:
+    print("-1")
+else:
+    print(s)
