@@ -1,9 +1,7 @@
 N = input()
 while N != '0':
-    for i in range(len(N)//2):
-        if N[i] != N[-i-1]:
-            print('no')
-            break
-    else:
+    if N == N[::-1]:
         print('yes')
+    else:
+        print('no')
     N = input()
