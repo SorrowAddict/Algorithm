@@ -1,9 +1,9 @@
 import sys
-n=int(sys.stdin.readline())
-li=[]
+input=sys.stdin.readline
+n=int(input())
+c=[]
 for i in range(n):
-    a, b = map(int, sys.stdin.readline().split())
-    li.append([a, b])
-li.sort()
-for i in li:
-    print(i[0], i[1])
+    d,e=map(int,input().split())
+    c.append(d*200001+e)
+for i in sorted(c):
+    print((i+100000)//200001,i-200001*((i+100000)//200001))
