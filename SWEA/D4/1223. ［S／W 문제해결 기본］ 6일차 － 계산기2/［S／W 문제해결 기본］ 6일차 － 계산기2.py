@@ -11,16 +11,12 @@ for tc in range(1, 11):
         if x.isnumeric():
             post_fix.append(x)
         else:
-            if stack:
-                if icp[x] > isp[stack[-1]]:
-                    stack.append(x)
-                else:
-                    post_fix.append(stack.pop())
-                    stack.append(x)
-            else:
-                stack.append(x)
+            while stack and icp[x] <= isp[stack[-1]]:
+                post_fix.append(stack.pop())
+            stack.append(x)
     else:
-        post_fix.append(stack.pop())
+        while stack:
+            post_fix.append(stack.pop())
     # ------ 여기까지 ------ #
 
     # ------ 변환식 계산 ------ #
@@ -35,4 +31,4 @@ for tc in range(1, 11):
                 stack.append(stack.pop()+stack.pop())
     # ------ 여기까지 ------ #
 
-    print(f'#{tc}', sum(stack))
+    print(f'#{tc}', stack[-1])
