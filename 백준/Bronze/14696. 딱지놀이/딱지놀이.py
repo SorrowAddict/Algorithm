@@ -1,15 +1,8 @@
 import sys
 input = sys.stdin.readline
 
-def my_max(lst):
-    my_min_v = lst[0]
-    for x in lst:
-        if my_min_v < x:
-            my_min_v = x
-    return my_min_v
-
 def my_count(lst):
-    COUNTS = [0] * (my_max(lst) + 1)
+    COUNTS = [0] * 5
     for x in lst:
         COUNTS[x] += 1
     return COUNTS
