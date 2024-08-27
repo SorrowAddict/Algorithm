@@ -4,13 +4,16 @@ input = sys.stdin.readline
 
 N, K = map(int, input().split())
 arr = deque(list(range(1, N+1)))
-lst = []
-i = 0
-while len(lst) < N:
+print('<', end='')
+i, cnt = 0, 0
+while cnt < N:
     temp = arr.popleft()
     if (i+1)%K == 0:
-        lst.append(temp)
+        cnt += 1
+        print(temp, end='')
+        if cnt != N:
+            print(', ', end='')
     else:
         arr.append(temp)
     i += 1
-print('<'+', '.join(map(str, lst))+'>')
+print('>')
