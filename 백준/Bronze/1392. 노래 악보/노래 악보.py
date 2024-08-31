@@ -1,3 +1,6 @@
+import sys
+input = sys.stdin.readline
+
 N, Q = map(int, input().split())
 lst = [int(input()) for _ in range(N)]
 for _ in range(Q):
