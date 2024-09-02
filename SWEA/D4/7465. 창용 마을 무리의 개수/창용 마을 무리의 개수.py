@@ -1,8 +1,20 @@
-def bfs(i):
+from collections import deque
+
+def dfs(i):
     visited[i] = True
     for j in adj_l[i]:
         if visited[j] == 0:
-            bfs(j)
+            dfs(j)
+
+def bfs(i):
+    q = deque([i])
+    visited[i] = True
+    while q:
+        i = q.popleft()
+        for j in adj_l[i]:
+            if visited[j] == 0:
+                q.append(j)
+                visited[j] = 1
 
 for tc in range(1, int(input())+1):
     N, M = map(int, input().split())
