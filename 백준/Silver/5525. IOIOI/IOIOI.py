@@ -2,12 +2,20 @@ import sys
 input = sys.stdin.readline
 
 N = int(input())
-Pn = 'IO'*N + 'I'
 M = int(input())
-S = input().strip()
+S = input()
 
-cnt = 0
-for i in range(M-(2*N+1)+1):
-    if S[i:i+2*N+1] == Pn:
-        cnt += 1
-print(cnt)
+count = 0
+Pattern = 0
+i = 1
+while i < M - 1:
+    if S[i - 1] == 'I' and S[i] == 'O' and S[i + 1] == 'I':
+        Pattern += 1
+        if Pattern == N:
+            Pattern -= 1
+            count += 1
+        i += 1
+    else:
+        Pattern = 0
+    i += 1
+print(count)
