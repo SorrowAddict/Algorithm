@@ -1,39 +1,43 @@
-import sys, heapq
+import sys
 input = sys.stdin.readline
 
 n = int(input())
 m = int(input())
-graph = [[] for _ in range(n + 1)]
 
+edges = {}
 for _ in range(m):
-    a, b, c = map(int, input().split())
-    graph[a].append((b, c))
+    s, e, cost = map(int, input().split())
+    if s not in edges:
+        edges[s] = {e : cost}
+    if e not in edges[s] or edges[s][e] > cost:
+        edges[s][e] = cost
 
-start, end = map(int, input().split())
+s, e = map(int, input().split())
+costs = [100000 * n + 1 for _ in range(n+1)]
+costs[s] = 0
+parents = [0 for _ in range(n+1)]
 
-nearnest = [start] * (n + 1)
-distance = [1e9] * (n + 1)
+import heapq
+heap = [(0, s)]
 
-q = [(0, start)]
-while q:
-    dist, now = heapq.heappop(q)
-    if dist > distance[now]:
+while heap:
+    cost, x = heapq.heappop(heap)
+    if x == e:
+        break
+    if cost < costs[x] or x not in edges:
         continue
-    for next, nextDist in graph[now]:
-        cost = nextDist + dist
-        if cost < distance[next]:
-            distance[next], nearnest[next] = cost, now
-            heapq.heappush(q, (cost, next))
-    
-ans = []
-tmp = end
-while tmp != start:
-    ans.append(str(tmp))
-    tmp = nearnest[tmp]
+    for nx in edges[x]:
+        nCost = cost + edges[x][nx]
+        if costs[nx] <= nCost:
+            continue
+        costs[nx] = nCost
+        parents[nx] = x
+        heapq.heappush(heap, (nCost, nx))
 
-ans.append(str(start))
-ans.reverse()
+result = [e]
+while parents[result[-1]] != 0:
+    result.append(parents[result[-1]])
 
-print(distance[end])
-print(len(ans))
-print(" ".join(ans))
+print(costs[e])
+print(len(result))
+print(" ".join(map(str, reversed(result))))
