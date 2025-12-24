@@ -2,14 +2,9 @@ import sys
 input = sys.stdin.readline
 
 N = int(input())
-nums = list(map(int, input().split()))
-__nums = sorted(list(set(nums)))
+arr = list(map(int, input().split()))
+_arr = sorted(list(set(arr)))
 d = dict()
-idx = 0
-for i in __nums:
-    if i not in d:
-        d[i] = idx
-        idx += 1
-
-for i in nums:
-    print(d[i], end=' ')
+for i in range(len(_arr)):
+    d[_arr[i]] = i
+print(' '.join(str(d[x]) for x in arr))
