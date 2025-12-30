@@ -2,65 +2,77 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	static int N;
-	static int[][] arr;
-	static boolean[][] visited;
-	static ArrayDeque<int[]> q;
-	static int h;
 
-	static int[] di = {1, 0, -1, 0};
-	static int[] dj = {0, 1, 0, -1};
+    static int N;
+    static int[][] arr;
+    static boolean[][] active;
+    static int[] parent;
 
-	public static void bfs() {
-		while (!q.isEmpty()) {
-			int[] cur =  q.poll();
-			int i = cur[0];
-			int j = cur[1];
+    static int[] di = {1, 0, -1, 0};
+    static int[] dj = {0, 1, 0, -1};
 
-			for (int d = 0; d < 4; d++) {
-				int ni = i + di[d];
-				int nj = j + dj[d];
-				if (0 <= ni && ni < N && 0 <= nj && nj < N) {
-					if (!visited[ni][nj] && arr[ni][nj] > h) {
-						visited[ni][nj] = true;
-						q.offer(new int[] {ni, nj});
-					}
-				}
-			}
-		}
-	}
+    static int find(int x) {
+        if (parent[x] == x) return x;
+        return parent[x] = find(parent[x]);
+    }
 
-	public static void main(String[] args) throws IOException {
-			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-			N = Integer.parseInt(br.readLine());
-			arr = new int[N][N];
-			int max_h = 0;
-			int min_h = 100;
-			for (int i = 0; i < N; i++) {
-				StringTokenizer st = new StringTokenizer(br.readLine());
-				for (int j = 0; j < N; j++) {
-					arr[i][j] = Integer.parseInt(st.nextToken());
-					max_h = Math.max(max_h, arr[i][j]);
-					min_h = Math.min(min_h, arr[i][j]);
-				}
-			}
-			int ans = 0;
-			for (h = min_h - 1; h <= max_h; h++) {
-				visited = new boolean[N][N];
-				int cnt = 0;
-				for (int i = 0; i < N; i++) {
-					for (int j = 0; j < N; j++) {
-						if (!visited[i][j] && arr[i][j] > h) {
-							visited[i][j] = true;
-							q = new ArrayDeque<>();
-							q.offer(new int[] {i, j});
-							bfs();
-							cnt++;
-						}
-					}
-				}
-				ans = Math.max(ans,  cnt);
-			}
-			System.out.println(ans);
-	}
+    static void union(int a, int b) {
+        a = find(a);
+        b = find(b);
+        if (a != b) parent[b] = a;
+    }
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        N = Integer.parseInt(br.readLine());
+        arr = new int[N][N];
+        active = new boolean[N][N];
+
+        List<int[]> cells = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < N; j++) {
+                arr[i][j] = Integer.parseInt(st.nextToken());
+                cells.add(new int[]{arr[i][j], i, j});
+            }
+        }
+        cells.sort((a, b) -> b[0] - a[0]);
+
+        parent = new int[N * N];
+        for (int i = 0; i < N * N; i++) parent[i] = i;
+        int cnt = 0;
+        int ans = 0;
+        int idx = 0;
+        while (idx < cells.size()) {
+            int curH = cells.get(idx)[0];
+            int start = idx;
+            while (idx < cells.size() && cells.get(idx)[0] == curH) {
+                int i = cells.get(idx)[1];
+                int j = cells.get(idx)[2];
+                active[i][j] = true;
+                cnt++;	// 새로운 영역 생성
+                idx++;
+            }
+
+            for (int k = start; k < idx; k++) {
+                int i = cells.get(k)[1];
+                int j = cells.get(k)[2];
+                int id = i * N + j;
+                for (int d = 0; d < 4; d++) {
+                    int ni = i + di[d];
+                    int nj = j + dj[d];
+                    if (ni < 0 || nj < 0 || ni >= N || nj >= N) continue;
+                    if (!active[ni][nj]) continue;
+                    int nid = ni * N + nj;
+                    if (find(id) != find(nid)) {
+                        union(id, nid);
+                        cnt--;	// 두 영역 합쳐짐
+                    }
+                }
+            }
+            ans = Math.max(ans, cnt);
+        }
+
+        System.out.println(ans);
+    }
 }
