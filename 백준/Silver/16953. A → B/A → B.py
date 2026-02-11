@@ -1,18 +1,16 @@
-import sys
-from collections import deque
-input = sys.stdin.readline
-
-def bfs():
-    q = deque([(A, 1)])
-    while q:
-        v, cnt = q.popleft()
-        if v == B:
-            return cnt
-        lst = [v*2, int(str(v)+'1')]
-        for i in lst:
-            if i <= B:
-                q.append((i, cnt+1))
-    return -1
-
 A, B = map(int, input().split())
-print(bfs())
+
+cnt = 1
+while A < B:
+    if B % 2 == 0:
+        B //= 2
+    elif B % 10 == 1:
+        B //= 10
+    else:
+        break
+    cnt += 1
+
+if A == B:
+    print(cnt)
+else:
+    print(-1)
