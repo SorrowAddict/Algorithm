@@ -2,44 +2,74 @@ import sys
 input = sys.stdin.readline
 from collections import deque
 
-def bfs():
-    while q:
-        i, j = q.popleft()
-        for di, dj in ((-1, 0), (0, 1), (1, 0), (0, -1)):
-            ni, nj = i + di, j + dj
-            if 0 <= ni < N and 0 <= nj < M:
-                if arr[ni][nj] == 0:
-                    visited[i][j] += 1
-                if visited[ni][nj] == 0 and arr[ni][nj] != 0:
-                    q.append((ni, nj))
-                    visited[ni][nj] = 1
+dx = [0, 1, 0, -1]
+dy = [1, 0, -1, 0]
+def bfs(n, m):
+    que = deque()
+    que.append([n, m])
+    vst[n][m] = True
+    
+    while que:
+        x, y = que.popleft()
+        
+        for i in range(4):
+            nx = x + dx[i]
+            ny = y + dy[i]
+            
+            if not vst[nx][ny] and grid[nx][ny] > 0:
+                que.append([nx, ny])
+                vst[nx][ny] = True
 
 N, M = map(int, input().split())
-arr = [list(map(int, input().split())) for _ in range(N)]
 
-year = 0
+stk = []
+grid = [([0] * M) for _ in range(N)]
+for i in range(N):
+    grid[i] = list(map(int, input().split()))
+    for j in range(M):
+        if grid[i][j] > 0:
+            stk.append([i, j])
+    
+vst = [([False] * M) for _ in range(N)]
+
+ans = 0
 while True:
-    cnt = 0
-    visited = [[0] * M for _ in range(N)]
-    for i in range(N):
-        for j in range(M):
-            if visited[i][j] == 0 and arr[i][j] > 0:
-                q = deque([(i, j)])
-                visited[i][j] = 1
-                bfs()
+    sep = 0
+    for x, y in stk:
+        if not vst[x][y]:
+            bfs(x, y)
+            sep += 1
+    if sep > 1:
+        print(ans)
+        exit()
+        
+    diffs = []
+    for x, y in stk:
+        vst[x][y] = False
+        
+        cnt = 0
+        for i in range(4):
+            nx = x + dx[i]
+            ny = y + dy[i]
+            if grid[nx][ny] == 0:
                 cnt += 1
-
-    for i in range(N):
-        for j in range(M):
-            if visited[i][j] != 0:
-                arr[i][j] -= (visited[i][j] - 1)
-                if arr[i][j] < 0: arr[i][j] = 0
-
-    if cnt >= 2:
-        print(year)
-        break
-    if cnt == 0:
+    
+        if cnt > 0:
+            diffs.append([x, y, -cnt])
+    
+    if len(diffs) == 0:
         print(0)
-        break
+        exit()
+    
+    ans += 1
 
-    year += 1
+    for x, y, c in diffs:
+        grid[x][y] += c
+        if grid[x][y] < 0:
+            grid[x][y] = 0
+        
+    tmp = []
+    for x, y in stk:
+        if grid[x][y] > 0:
+            tmp.append([x, y])
+    stk = tmp
